@@ -1,0 +1,61 @@
+<div class="booking-container">
+  <h2>🎬 Movie Ticket Booking</h2>
+    <p>Total shows loaded: {{ shows.length }}</p>
+  <!-- STEP 1: Select Show -->
+  <div *ngIf="step === 1">
+    <h3>Select a Show</h3>
+    <button class="btn-show" *ngFor="let show of shows" (click)="selectShow(show.showId)">
+      {{ show.title }}
+    </button>
+  </div>
+
+  <!-- STEP 2: Select Seat Layout -->
+  <div *ngIf="step === 2">
+    <h3>Seat Layout</h3>
+    <button class="btn-back" (click)="step = 1">🔙 Back to Shows</button>
+    
+    <div class="seat-grid">
+      <button *ngFor="let seat of seats" 
+              class="seat-btn"
+              [class.available]="seat.status === 'Available'"
+              [class.booked]="seat.status !== 'Available'"
+              [disabled]="seat.status !== 'Available'"
+              (click)="lockSeat(seat)">
+        {{ seat.seatNumber }}<br>
+        <small>₹{{ seat.price }}</small>
+      </button>
+    </div>
+    <p class="error-text" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </div>
+
+  <!-- STEP 3: Bill & Payment -->
+  <!-- STEP 3: Bill & Payment -->
+  <div *ngIf="step === 3 && bill">
+    <h3>Invoice</h3>
+    <div class="invoice-card">
+      <p><strong>Seat:</strong> {{ bill.seatNumber }}</p>
+      <p><strong>Base Price:</strong> ₹{{ bill.basePrice }}</p>
+      <p><strong>Taxes:</strong> ₹{{ bill.taxes | number:'1.2-2' }}</p>
+      <hr>
+      <h4>Total: ₹{{ bill.totalAmount | number:'1.2-2' }}</h4>
+      <p class="timer-text">⏳ Seat reserved for 10 minutes. Please complete payment.</p>
+    </div>
+    
+    <!-- This button triggers the final payment -->
+    <button class="btn-pay" (click)="pay()">Confirm & Pay</button>
+  </div>
+
+  <!-- STEP 4: Success -->
+  <!-- STEP 4: Success -->
+  <div *ngIf="step === 4 && ticket">
+    <h3 class="success-header">✅ Booking Confirmed!</h3>
+    <div class="ticket-card">
+      <p><strong>Ticket Number:</strong> {{ ticket.ticketNumber }}</p>
+      <p><strong>Amount Paid:</strong> ₹{{ ticket.amountPaid }}</p>
+      <p><strong>Status:</strong> {{ ticket.paymentStatus }}</p>
+      
+      <!-- Button to reset the app and book another ticket -->
+      <button class="btn-reset" (click)="reset()">Book Another Ticket</button>
+    </div>
+  </div>
+</div>
